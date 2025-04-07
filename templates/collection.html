@@ -34,7 +34,6 @@
         <div>
             <h2 class="text-xl font-bold">{{ doc.doc_title }}</h2>
             <h3 class="text-md mt-2">{{ doc.doc_description }}</h3>
-            <h3 class="text-md mt-2">{{ doc.filename }}</h3>
         </div>
         <div class="text-right">
             <h3 class="text-md text-gray-600">Created at GMT: {{ time.strftime('%d-%m-%Y %H:%M:%S', time.gmtime(doc.created_time)) }}</h3>

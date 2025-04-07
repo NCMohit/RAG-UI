@@ -20,6 +20,7 @@
             {% for doc in docs %}
             <div class="flex justify-between border border-gray-300 rounded-lg p-4 mb-4 bg-white shadow">
                 <div>
+                    <h4 class="text-lg mt-2">Document: {{ doc[0].metadata["doc_title"] }}</h4>
                     <h4 class="text-md mt-2">{{ doc[0].page_content }}</h4>
                 </div>
             </div>

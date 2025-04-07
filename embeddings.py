@@ -2,7 +2,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import UnstructuredHTMLLoader, csv_loader, PyPDFLoader
 import json
 
-def generate_documents(config, input_file):
+def generate_documents(config, input_file, doc_title, doc_description):
     if((input_file.endswith(".txt")) or (input_file.endswith(".md"))):
         with open(input_file,"r") as file:
             txt = file.read()
@@ -35,5 +35,5 @@ def generate_documents(config, input_file):
     docs = text_splitter.create_documents([txt])
     print(f"Documents generated for file: {input_file}")
     for index in range(len(docs)):
-        docs[index].metadata = {"document_name": input_file}
+        docs[index].metadata = {"doc_title": doc_title, "doc_description": doc_description}
     return docs

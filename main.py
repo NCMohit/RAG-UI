@@ -20,29 +20,9 @@ embedding_model = HuggingFaceEmbeddings(
 
 initialize_vectordb(config)
 
-def load_document(input_file, collection_name):
-    docs = generate_documents(config, input_file)
+def load_document(input_file, collection_name, doc_title, doc_description):
+    docs = generate_documents(config, input_file, doc_title, doc_description)
     store_documents(config, embedding_model, collection_name, docs)
-
-# query = "How to test for XSS?"
-
-# docs = fetch_top_records(config, embedding_model, collection_name, query, top_k=config["embd"]["query_top_k"])
-
-# prompt = construct_prompt(docs, query)
-
-# print(prompt)
-
-# llm_response = llm_call(config, prompt)
-
-# with open("llm_response.json","w") as file:
-#     file.write(json.dumps(llm_response, indent=2))
-
-# output = json.loads(llm_response.json()["choices"][0]["message"]["content"])
-
-# with open("output_response.json","w") as file:
-#     file.write(output)
-
-# print(output)
 
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'md', 'html', 'csv', 'json'}
@@ -54,6 +34,18 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def check_collection_name(collection_name):
+    check = True
+    for char in collection_name:
+        if(char.isalnum()):
+            pass
+        elif(char == "_"):
+            pass
+        else:
+            check = False
+            break
+    return check
 
 @app.route("/", methods=["GET","POST"])
 def index_page():
@@ -105,6 +97,8 @@ def collection_creation_page():
         if(request.method == "POST"):
             if("username" in session):
                 result = request.form
+                if(not check_collection_name(result['collection_name'])):
+                    return render_template('alert.html', title="Error", alert="Collection Name should only have letters, numbers and underscore !")
                 if(create_collection(session['username'],result['collection_name'],result['collection_description'], result["sys_prompt"])):
                     return redirect(url_for("main_page"))
                 else:
@@ -175,13 +169,13 @@ def upload_doc(collection_id):
                 if file.filename == '':
                     return render_template('alert.html', title="Error", alert="No file selected")
                 if file and allowed_file(file.filename):
-                    filename = session["username"] + "_" + secure_filename(file.filename)
+                    filename = session["username"] + "_" + collection.collection_name + "_" + secure_filename(file.filename)
                     file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 else:
                     return render_template('alert.html', title="Error", alert="Unsupported file type !")
                 
                 if(create_document(session['username'],collection_id,result['doc_title'],result['doc_description'],filename)):
-                    load_document(os.path.join(app.config['UPLOAD_FOLDER'], filename), session["username"] + "_" + collection.collection_name)
+                    load_document(os.path.join(app.config['UPLOAD_FOLDER'], filename), session["username"] + "_" + collection.collection_name, result['doc_title'],result['doc_description'])
                     return redirect(url_for("collection_page",collection_id=collection_id))
                 else:
                     return render_template('alert.html', title="Error", alert="Document title already exists")
@@ -193,4 +187,4 @@ def upload_doc(collection_id):
         return redirect(url_for("index_page"))
 
 if(__name__=="__main__"):
-    app.run(host="0.0.0.0", port=8080, debug=True)
+    app.run(host="0.0.0.0", port=8080, debug=False)

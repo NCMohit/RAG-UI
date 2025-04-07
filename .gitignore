@@ -2,3 +2,4 @@ env/
 milvus/
 __pycache__/
 instance/
+uploads/*

@@ -56,7 +56,7 @@ def fetch_top_records(config, embeddings, collection_name, query, top_k):
         query, k=top_k
     )
 
-def delte_collection(config, collection_name):
+def delete_collection(config, collection_name):
     client = MilvusClient(
         uri=f"{config["db"]["host"]}:{config["db"]["port"]}",
         token=f"{config["db"]["username"]}:{config["db"]["password"]}",
