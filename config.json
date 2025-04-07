@@ -1,0 +1,27 @@
+{
+    "db": {
+        "host": "http://localhost",
+        "port": "19530",
+        "username": "root",
+        "password": "Milvus",
+        "db_name": "my_milvus_db",
+        "index_type": "FLAT",
+        "metric_type": "COSINE"
+    },
+    "embd": {
+        "model_name": "BAAI/bge-large-en-v1.5",
+        "query_top_k": 10
+    },
+    "chunks": {
+        "chunk_size": 500,
+        "chunk_overlap": 0
+    },
+    "llm": {
+        "api_key": "sk-your_api_key",
+        "endpoint": "https://api.deepseek.com/chat/completions",
+        "model_name": "deepseek-chat",
+        "params": {
+            "temperature": 0
+        }
+    }
+}

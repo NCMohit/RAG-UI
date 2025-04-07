@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG UI</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-200 p-6">
+    <h1 class="text-4xl font-bold mb-6">RAG UI</h1>
+    <div class="flex justify-between items-center mb-6">
+        <div>
+            <h3 class="text-xl">I am {{ session['username'] }}</h3>
+        </div>
+        <div class="space-x-4">
+            <a href="/create_collection">
+                <button class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 mb-6"><h4>Create Collection</h4></button>
+            </a>
+            <a href="/logout">
+                <button class="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"><h5>Logout</h5></button>
+            </a>
+        </div>
+    </div>
+    <h2 class="text-2xl font-semibold mb-4">Collections</h2>
+    {% for collection in collections %}
+    <div class="flex justify-between border border-gray-300 rounded-lg p-4 mb-4 bg-white shadow">
+        <div>
+            <h3 class="text-xl font-bold">{{ collection.collection_name }}</h3>
+            <h4 class="text-md mt-2">{{ collection.collection_description }}</h4>
+        </div>
+        <div class="text-right">
+            <h4 class="text-md mb-2 text-gray-600">Created at: {{ time.strftime('%d-%m-%Y %H:%M:%S', time.gmtime(collection.created_time)) }}</h4>
+            <a href="/collection/{{ collection.collection_id }}">
+                <button class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"><h4>Open collection</h4></button>
+            </a>
+            <!-- <a href="/query_collection/{{ collection.collection_id }}">
+                <button class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"><h4>Query Collection</h4></button>
+            </a> -->
+        </div>
+    </div>
+    {% endfor %}
+</body>
+</html>

@@ -1,0 +1,9 @@
+pymilvus
+langchain_milvus
+sentence_transformers
+langchain_community
+pypdf
+unstructured
+torch --index-url https://download.pytorch.org/whl/cu126
+flask
+flask_sqlalchemy
