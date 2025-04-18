@@ -1,4 +1,4 @@
-from vectordb import initialize_vectordb, store_documents, fetch_top_records, delte_collection
+from vectordb import initialize_vectordb, store_documents, fetch_top_records, delete_collection, delete_document
 from embeddings import generate_documents
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from llm import construct_prompt, llm_call
@@ -8,7 +8,7 @@ import os
 import time
 from flask import Flask, render_template, request, session, url_for, redirect, flash
 from authentication import validate_login_credentials, validate_register_credentials
-from database import create_collection, fetch_collections_by_username, fetch_collection_by_id, create_document, fetch_documents
+from database import create_collection, fetch_collections_by_username, fetch_collection_by_id, create_document, fetch_documents, fetch_document_by_id, delete_collection_db, delete_document_db
 from werkzeug.utils import secure_filename
 
 config = json.load(open("config.json","r"))
@@ -134,6 +134,19 @@ def query_collection(collection_id):
     else:
         return redirect(url_for("index_page"))
 
+@app.route("/delete_collection/<collection_id>", methods=["GET","POST"])
+def del_collection(collection_id):
+    if("username" in session):
+        collection = fetch_collection_by_id(collection_id)
+        if(session['username']==collection.username):
+            delete_collection(config, collection.collection_name)
+            delete_collection_db(UPLOAD_FOLDER, collection.collection_id)
+            return redirect(url_for("main_page"))
+        else:
+            return render_template('alert.html', title="Error", alert="This is not your Collection!")
+    else:
+        return redirect(url_for("index_page"))
+
 @app.route("/query_llm/<collection_id>", methods=["GET","POST"])
 def query_llm(collection_id):
     if("username" in session):
@@ -186,5 +199,19 @@ def upload_doc(collection_id):
     else:
         return redirect(url_for("index_page"))
 
+@app.route("/delete_doc/<document_id>", methods=["GET","POST"])
+def del_document(document_id):
+    if("username" in session):
+        document = fetch_document_by_id(document_id)
+        collection = fetch_collection_by_id(document.collection_id)
+        if(session['username']==document.username):
+            delete_document(config, session["username"] + "_" + collection.collection_name, document.doc_title)
+            delete_document_db(UPLOAD_FOLDER, document.document_id)
+            return redirect(url_for("collection_page",collection_id=collection.collection_id))
+        else:
+            return render_template('alert.html', title="Error", alert="This is not your Collection!")
+    else:
+        return redirect(url_for("index_page"))
+    
 if(__name__=="__main__"):
     app.run(host="0.0.0.0", port=8080, debug=False)

@@ -33,9 +33,9 @@
             <a href="/collection/{{ collection.collection_id }}">
                 <button class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"><h4>Open collection</h4></button>
             </a>
-            <!-- <a href="/query_collection/{{ collection.collection_id }}">
-                <button class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"><h4>Query Collection</h4></button>
-            </a> -->
+            <a href="/delete_collection/{{ collection.collection_id }}">
+                <button class="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"><h4>Delete collection</h4></button>
+            </a>
         </div>
     </div>
     {% endfor %}

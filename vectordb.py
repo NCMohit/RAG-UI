@@ -67,3 +67,13 @@ def delete_collection(config, collection_name):
         collection_name=collection_name
     )
     print(f"Deleted collection {collection_name}")
+
+def delete_document(config, collection_name, document_name):
+    client = MilvusClient(
+        uri=f"{config["db"]["host"]}:{config["db"]["port"]}",
+        token=f"{config["db"]["username"]}:{config["db"]["password"]}",
+        db_name=config["db"]["db_name"]
+    )
+
+    client.delete(collection_name=collection_name, filter=f"doc_title in ['{document_name}']")
+    print(f"Deleted document {document_name}")
